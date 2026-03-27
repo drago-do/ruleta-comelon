@@ -5,7 +5,7 @@ Crear una aplicación web humorística e interactiva que permita a los usuarios 
 2. Arquitectura Técnica Sugerida
  * Frontend: React.js (Nextjs) (para manejar el estado de las fotos y el texto) + Three.js (o React Three Fiber) para renderizar y animar las ruletas 3D de forma fluida en el navegador.
  * Procesamiento de IA (OCR y Clasificación): Uso de la API de OpenRouter como proxy.
- * Modelo de IA: google/gemini-1.5-flash. Es el modelo ideal porque es multimodal (acepta imágenes), rapidísimo, extremadamente barato y lo suficientemente inteligente para no solo extraer texto, sino devolverlo formateado en un JSON separando comidas de bebidas.
+ * Modelo de IA: google/gemini-3.1-flash-lite-preview. Es el modelo ideal porque es multimodal (acepta imágenes), rapidísimo, extremadamente barato y lo suficientemente inteligente para no solo extraer texto, sino devolverlo formateado en un JSON separando comidas de bebidas.
  * Estilo Visual: Caricaturesco, colorido, estilo "casino de comida rápida" o "game show" exagerado.
 🧑‍💻 Historias de Usuario (HUs)
 HU1: Subir fotos del menú
@@ -18,7 +18,7 @@ Para que el sistema tenga el menú del cual elegir.
    * Debe mostrar miniaturas de las imágenes subidas antes de procesar.
 HU2: Extracción y clasificación de texto (Integración OpenRouter)
 Como sistema,
-Quiero enviar las imágenes a OpenRouter usando google/gemini-1.5-flash,
+Quiero enviar las imágenes a OpenRouter usando google/gemini-3.1-flash-lite-preview,
 Para que extraiga los platillos y bebidas y los devuelva en un formato estructurado.
  * Criterios de Aceptación:
    * El sistema debe mostrar una animación de carga graciosa (ej. "Leyendo los jeroglíficos del chef...").

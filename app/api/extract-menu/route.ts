@@ -56,7 +56,7 @@ Si no encuentras bebidas o comida, devuelve el array vacío. Devuelve SOLO JSON 
         'X-Title': 'La Ruleta Tragona 3000',
       },
       body: JSON.stringify({
-        model: 'google/gemini-1.5-flash',
+        model: 'google/gemini-3.1-flash-lite-preview',
         messages: [
           {
             role: 'user',
