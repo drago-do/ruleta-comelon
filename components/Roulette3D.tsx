@@ -2,6 +2,7 @@ import React, { Suspense, useState, useRef, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { useGLTF, Text, OrbitControls, Environment, Center } from '@react-three/drei';
 import * as THREE from 'three';
+import VictoryScreen from './VictoryScreen';
 
 interface Roulette3DProps {
   comida: string[];
@@ -50,12 +51,8 @@ function RouletteWheel({
       const fullSpins = 5 + Math.random() * 3; // 5 to 8 full extra spins
       const winningAngle = targetItemIndex * angleStep;
       
-      // To align the winning slice with the pointer, we need the wheel to rotate such that
-      // the slice's angle + wheel rotation = pointer angle.
-      // Modulo is used to keep it spinning forward.
       const targetRotationBase = pointerAngleOffset - winningAngle;
       
-      // Normalize current rotation
       const currentNorm = startRotationRef.current % (Math.PI * 2);
       let diff = targetRotationBase - currentNorm;
       if (diff < 0) diff += Math.PI * 2;
@@ -74,14 +71,13 @@ function RouletteWheel({
       if (progress >= 1) {
         progress = 1;
         groupRef.current.rotation.y = targetRotationRef.current;
-        setStartTime(null); // Stop frame loop logic
+        setStartTime(null); // Stop frame loop 
         onFinish(targetItemIndex);
       } else {
         const eased = easeOutCubic(progress);
         const currentRotation = startRotationRef.current + (targetRotationRef.current - startRotationRef.current) * eased;
         groupRef.current.rotation.y = currentRotation;
         
-        // Sound logic: check if crossed a boundary
         const slicesPassed = Math.floor((currentRotation - pointerAngleOffset + (angleStep/2)) / angleStep);
         if (slicesPassed > lastClackAngleRef.current) {
           lastClackAngleRef.current = slicesPassed;
@@ -153,18 +149,17 @@ export default function Roulette3D({ comida, bebidas, onBack }: Roulette3DProps)
   
   const [comidaTarget, setComidaTarget] = useState(0);
   const [bebidasTarget, setBebidasTarget] = useState(0);
+  const [showVictory, setShowVictory] = useState(false);
 
   const handleSpin = () => {
     if (isSpinning) return;
-    
-    // Play an initial fast clack or drumroll? (Optional)
-    // We already have clacks playing locally per wheel.
     
     setComidaTarget(Math.floor(Math.random() * Math.max(comida.length, 1)));
     setBebidasTarget(Math.floor(Math.random() * Math.max(bebidas.length, 1)));
     
     setComidaFinished(false);
     setBebidasFinished(false);
+    setShowVictory(false);
     setIsSpinning(true);
   };
 
@@ -178,16 +173,20 @@ export default function Roulette3D({ comida, bebidas, onBack }: Roulette3DProps)
     setResults(prev => ({ ...prev, bebidas: bebidas[index] || "Nada" }));
   };
 
-  // Check if both finished
+  const handleRestartSpin = () => {
+    setShowVictory(false);
+    setResults({ comida: null, bebidas: null });
+    // Small delay to allow react to flush the state change before rotating again
+    setTimeout(handleSpin, 50);
+  };
+
   useEffect(() => {
     if (comidaFinished && bebidasFinished) {
       setIsSpinning(false);
-      // TO-DO: trigger HUD or callback for HU5
-      setTimeout(() => {
-        alert(`¡Resultados!\nComida: ${results.comida}\nBebida: ${results.bebidas}`);
-      }, 500);
+      // Small pause before full reveal for suspension
+      setTimeout(() => setShowVictory(true), 1000);
     }
-  }, [comidaFinished, bebidasFinished, results]);
+  }, [comidaFinished, bebidasFinished]);
 
   return (
     <div className="fixed inset-0 z-50 bg-yellow-400 flex flex-col">
@@ -216,7 +215,7 @@ export default function Roulette3D({ comida, bebidas, onBack }: Roulette3DProps)
               <group position={[0, -1, 0]}>
                 <RouletteWheel 
                   url="/models/ruleta.glb" items={comida} position={[-3, 0, 0]} scale={2} color="#b91c1c" label="🍕 COMIDA" 
-                  isSpinning={isSpinning} spinDuration={6000} onFinish={onComidaFinish} targetItemIndex={comidaTarget} pointerAngleOffset={Math.PI / 2} // PI/2 corresponds to Z axis
+                  isSpinning={isSpinning} spinDuration={6000} onFinish={onComidaFinish} targetItemIndex={comidaTarget} pointerAngleOffset={Math.PI / 2} 
                 />
                 
                 <RouletteWheel 
@@ -224,7 +223,6 @@ export default function Roulette3D({ comida, bebidas, onBack }: Roulette3DProps)
                   isSpinning={isSpinning} spinDuration={8000} onFinish={onBebidasFinish} targetItemIndex={bebidasTarget} pointerAngleOffset={Math.PI / 2}
                 />
 
-                {/* Pointers: positioned just outside the wheels facing the Z axis (front camera) */}
                 <Pointer position={[-3, 0.5, 3]} rotation={[0, Math.PI, 0]} />
                 <Pointer position={[3, 0.5, 2.3]} rotation={[0, Math.PI, 0]} />
               </group>
@@ -235,12 +233,22 @@ export default function Roulette3D({ comida, bebidas, onBack }: Roulette3DProps)
         </Canvas>
 
         {/* Start Button */}
-        {!isSpinning && !comidaFinished && !bebidasFinished && (
+        {!isSpinning && !showVictory && (
           <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2 cursor-pointer z-10">
              <button onClick={handleSpin} className="bg-red-600 hover:bg-red-500 text-white font-black text-5xl px-16 py-8 rounded-full shadow-[0_12px_0_rgb(127,29,29)] active:shadow-[0_0px_0_rgb(127,29,29)] active:translate-y-[12px] transition-all border-4 border-white uppercase flex items-center gap-4 cursor-pointer">
                ¡GIRAR! 🎲
              </button>
           </div>
+        )}
+
+        {/* Victory Screen Overlay */}
+        {showVictory && results.comida && results.bebidas && (
+          <VictoryScreen 
+            comida={results.comida} 
+            bebida={results.bebidas} 
+            onRestart={handleRestartSpin}
+            onNewMenu={onBack}
+          />
         )}
       </div>
     </div>
