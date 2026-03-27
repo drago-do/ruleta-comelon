@@ -76,23 +76,53 @@ export default function Home() {
     fileInputRef.current?.click();
   };
 
+  const fileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = (error) => reject(error);
+    });
+  };
+
   const processMenu = async () => {
+    if (images.length === 0) return;
     setIsProcessing(true);
     setError(null);
     
-    // Simulating API call to OpenRouter/Gemini
     try {
-      await new Promise(resolve => setTimeout(resolve, 5000));
+      const base64Images = await Promise.all(images.map(img => fileToBase64(img.file)));
       
-      // Mock result
-      const mockResult: ExtractionResult = {
-        comida: ["Tacos de Pastor", "Hamburguesa Monstrosa", "Ensalada Triste", "Pizza de Piña", "Sushi de Salmón"],
-        bebidas: ["Refresco de Cola", "Agua de Horchata", "Cerveza Fría", "Malteada de Fresa", "Tequila Derecho"]
-      };
+      const response = await fetch('/api/extract-menu', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ images: base64Images })
+      });
 
-      setResult(mockResult);
-    } catch (err) {
-      setError("¡Rayos! El chef no entiende tu letra (o la IA se empachó). Reintenta.");
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Error en la petición');
+      }
+
+      const resultData: ExtractionResult = await response.json();
+      
+      if ((!resultData.comida || resultData.comida.length === 0) && (!resultData.bebidas || resultData.bebidas.length === 0)) {
+          throw new Error('No se detectaron platos ni bebidas.');
+      }
+
+      setResult({
+        comida: resultData.comida || [],
+        bebidas: resultData.bebidas || []
+      });
+    } catch (err: any) {
+      console.error(err);
+      if (err.message === 'API key no configurada') {
+        setError("¡Falta la API Key! Agrega OPENROUTER_API_KEY a tu .env.local y reinicia el servidor.");
+      } else {
+        setError("¡Rayos! El chef no entiende tu letra (o la IA se empachó). Reintenta.");
+      }
     } finally {
       setIsProcessing(false);
     }
