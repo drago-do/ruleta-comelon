@@ -5,10 +5,10 @@ interface ExtractionResult {
 
 interface ExtractionResultsProps {
   result: ExtractionResult;
-  onReset: () => void;
+  onProceed: () => void;
 }
 
-export default function ExtractionResults({ result, onReset }: ExtractionResultsProps) {
+export default function ExtractionResults({ result, onProceed }: ExtractionResultsProps) {
   return (
     <div className="min-h-screen bg-yellow-400 p-8 flex flex-col items-center">
       <header className="mb-12 text-center">
@@ -46,7 +46,7 @@ export default function ExtractionResults({ result, onReset }: ExtractionResults
       </div>
 
       <button 
-        onClick={onReset}
+        onClick={onProceed}
         className="mt-12 bg-red-600 text-white text-3xl font-black py-6 px-12 rounded-full border-b-8 border-red-900 shadow-2xl hover:scale-105 active:translate-y-1 transition-all uppercase"
       >
         ¡A las Ruletas! 🎡

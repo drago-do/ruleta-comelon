@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import LoadingSpinner, { LOADING_MESSAGES } from "@/components/LoadingSpinner";
 import ExtractionResults from "@/components/ExtractionResults";
 import MenuImagePreview, { MenuImage } from "@/components/MenuImagePreview";
+import Roulette3D from "@/components/Roulette3D";
 
 export interface ExtractionResult {
   comida: string[];
@@ -15,6 +16,7 @@ export default function Home() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [loadingMsg, setLoadingMsg] = useState(LOADING_MESSAGES[0]);
   const [result, setResult] = useState<ExtractionResult | null>(null);
+  const [showRoulette, setShowRoulette] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -109,11 +111,21 @@ export default function Home() {
     return <LoadingSpinner message={loadingMsg} />;
   }
 
+  if (showRoulette && result) {
+    return (
+      <Roulette3D 
+        comida={result.comida} 
+        bebidas={result.bebidas} 
+        onBack={() => setShowRoulette(false)} 
+      />
+    );
+  }
+
   if (result) {
     return (
       <ExtractionResults 
         result={result} 
-        onReset={() => setResult(null)} 
+        onProceed={() => setShowRoulette(true)} 
       />
     );
   }
