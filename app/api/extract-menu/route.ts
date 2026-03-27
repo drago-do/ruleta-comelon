@@ -27,15 +27,16 @@ export async function POST(request: Request) {
       type: "text",
       text: `Eres un asistente experto en reconocimiento y extracción de texto de menús de comida.
 Tu tarea es leer las imágenes del menú que se te proporcionan y extraer ÚNICAMENTE los nombres de los platos de comida y las bebidas.
-Reglas:
+Reglas IMPORTANTES:
 1. IGNORA SIEMPRE TODOS LOS PRECIOS o números.
 2. IGNORA descripciones cortas, enfócate en el nombre principal del platillo o bebida.
-3. Devuelve los resultados STRICTAMENTE en formato JSON con la siguiente estructura:
+3. Importante: ¡Sin importar cuántas imágenes recibas, debes devolver un ÚNICO objeto JSON combinando todo! No devuelvas un array de objetos.
+4. Devuelve los resultados STRICTAMENTE en formato JSON con la siguiente estructura:
 {
   "comida": ["nombre del plato 1", "nombre del plato 2"],
   "bebidas": ["nombre de bebida 1", "nombre de bebida 2"]
 }
-Si no encuentras bebidas o comida, devuelve el array vacío. Devuelve SOLO JSON válido.`
+Si no encuentras bebidas o comida, devuelve el array vacío. Devuelve SOLO JSON válido sin texto adicional.`
     };
 
     const imageMessages = images.map((b64Img: string) => ({
@@ -80,7 +81,26 @@ Si no encuentras bebidas o comida, devuelve el array vacío. Devuelve SOLO JSON 
     textResult = textResult.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
 
     try {
-        const parsedResult = JSON.parse(textResult);
+        let parsedResult = JSON.parse(textResult);
+        
+        // Handle array of results from buggy LLM responses
+        if (Array.isArray(parsedResult)) {
+            const combinedResult = { comida: [] as string[], bebidas: [] as string[] };
+            for (const item of parsedResult) {
+                if (item.comida && Array.isArray(item.comida)) {
+                    combinedResult.comida.push(...item.comida);
+                }
+                if (item.bebidas && Array.isArray(item.bebidas)) {
+                    combinedResult.bebidas.push(...item.bebidas);
+                }
+            }
+            // Remove duplicates
+            parsedResult = {
+                comida: Array.from(new Set(combinedResult.comida)),
+                bebidas: Array.from(new Set(combinedResult.bebidas))
+            };
+        }
+
         return NextResponse.json(parsedResult);
     } catch(e) {
         console.error("Failed to parse JSON:", textResult);
