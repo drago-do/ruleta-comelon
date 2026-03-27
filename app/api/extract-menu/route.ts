@@ -2,9 +2,10 @@ import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
   try {
-    const { images } = await request.json(); // Array of base64 strings
+    const formData = await request.formData();
+    const files = formData.getAll('images') as File[];
 
-    if (!images || images.length === 0) {
+    if (!files || files.length === 0) {
       return NextResponse.json({ error: 'No images provided' }, { status: 400 });
     }
 
@@ -12,6 +13,15 @@ export async function POST(request: Request) {
     if (!apiKey || apiKey === 'tu_api_key_aqui') {
       return NextResponse.json({ error: 'API key no configurada' }, { status: 500 });
     }
+
+    // Convert files to base64 format for OpenRouter
+    const images = await Promise.all(
+      files.map(async (file) => {
+        const buffer = await file.arrayBuffer();
+        const base64 = Buffer.from(buffer).toString('base64');
+        return `data:${file.type};base64,${base64}`;
+      })
+    );
 
     const promptMessage = {
       type: "text",

@@ -76,29 +76,21 @@ export default function Home() {
     fileInputRef.current?.click();
   };
 
-  const fileToBase64 = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = (error) => reject(error);
-    });
-  };
-
   const processMenu = async () => {
     if (images.length === 0) return;
     setIsProcessing(true);
     setError(null);
     
     try {
-      const base64Images = await Promise.all(images.map(img => fileToBase64(img.file)));
+      const formData = new FormData();
+      images.forEach(img => {
+        formData.append('images', img.file);
+      });
       
       const response = await fetch('/api/extract-menu', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ images: base64Images })
+        // No Content-Type header needed for FormData; the browser sets it automatically with the boundary
+        body: formData
       });
 
       if (!response.ok) {
