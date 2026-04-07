@@ -247,7 +247,7 @@ export default function Roulette3D({
   }, [comidaFinished, bebidasFinished]);
 
   return (
-    <div className="fixed inset-0 z-50 bg-yellow-400 flex flex-col">
+    <div className="fixed inset-0 z-50 flex flex-col">
       <div className="p-4 flex justify-between items-center bg-red-600 text-white shadow-md z-10 relative border-b-8 border-red-800">
         <h2 className="text-3xl font-black italic uppercase drop-shadow-md">
           ¡El Casino del Hambre!
@@ -261,15 +261,7 @@ export default function Roulette3D({
         </button>
       </div>
 
-      <div className="flex-1 relative bg-linear-to-b from-yellow-300 to-yellow-500 overflow-hidden">
-        <div
-          className="absolute inset-0 opacity-10 pointer-events-none"
-          style={{
-            backgroundImage: "url('/images/Mantel.jpg')",
-            backgroundSize: "cover",
-          }}
-        />
-
+      <div className="flex-1 relative overflow-hidden">
         <Canvas camera={{ position: [0, 8, 10], fov: 50 }}>
           <ambientLight intensity={0.6} />
           <spotLight

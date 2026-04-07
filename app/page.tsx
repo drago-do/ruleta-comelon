@@ -15,7 +15,6 @@ export interface ExtractionResult {
 export default function Home() {
   const [images, setImages] = useState<MenuImage[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [loadingMsg, setLoadingMsg] = useState(LOADING_MESSAGES[0]);
   const [result, setResult] = useState<ExtractionResult | null>(null);
   const [showRoulette, setShowRoulette] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -27,18 +26,6 @@ export default function Home() {
     };
   }, [images]);
 
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (isProcessing) {
-      interval = setInterval(() => {
-        setLoadingMsg((prev) => {
-          const currentIndex = LOADING_MESSAGES.indexOf(prev);
-          return LOADING_MESSAGES[(currentIndex + 1) % LOADING_MESSAGES.length];
-        });
-      }, 2000);
-    }
-    return () => clearInterval(interval);
-  }, [isProcessing]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -116,7 +103,7 @@ export default function Home() {
   };
 
   if (isProcessing) {
-    return <LoadingSpinner message={loadingMsg} />;
+    return <LoadingSpinner />;
   }
 
   if (showRoulette && result) {
@@ -143,7 +130,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-yellow-400 font-sans p-4 sm:p-8 flex flex-col items-center">
+    <div className="min-h-screen font-sans p-4 sm:p-8 flex flex-col items-center">
       <header className="mb-8 sm:mb-12 text-center mt-4 sm:mt-8">
         <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-black text-red-600 [text-shadow:4px_4px_0_#000] sm:[text-shadow:6px_6px_0_#000] uppercase italic tracking-tighter mb-6 sm:mb-8 transform -rotate-2 leading-none">
           No sabes

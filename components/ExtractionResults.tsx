@@ -33,7 +33,7 @@ export default function ExtractionResults({
   };
 
   return (
-    <div className="min-h-screen bg-yellow-400 p-8 flex flex-col items-center">
+    <div className="min-h-screen p-8 flex flex-col items-center">
       <header className="mb-3 lg:mb-12  text-center mt-6 w-full flex flex-col items-center">
         <div className="flex items-center justify-between w-3/4">
           <button

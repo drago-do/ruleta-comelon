@@ -12,7 +12,7 @@ export async function POST(request: Request) {
     // Mock response for development environment to save API credits
     if (process.env.NODE_ENV === 'development') {
       console.log('--- MODO DESARROLLO ACTIVADO: Usando respuesta mock ---');
-      await new Promise(resolve => setTimeout(resolve, 1500)); // Simular latencia
+      await new Promise(resolve => setTimeout(resolve, 15000)); // Simular latencia
       return NextResponse.json({
         comida: [
           "Tacos de Pastor (MOCK)",

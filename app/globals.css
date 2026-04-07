@@ -34,7 +34,22 @@
 }
 
 body {
-  background: var(--background);
+  background-color: #FBBF24;
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  min-height: 100vh;
+  position: relative;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: url("/images/patternbg.avif");
+  background-repeat: repeat;
+  background-size: 500px;
+  opacity: 0.5;
+  filter: saturate(0.7);
+  z-index: -1;
+  pointer-events: none;
 }
