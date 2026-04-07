@@ -26,7 +26,6 @@ export default function Home() {
     };
   }, [images]);
 
-
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const selectedFiles = Array.from(e.target.files);
@@ -166,19 +165,21 @@ export default function Home() {
           >
             {images.length > 0 ? "Más +" : "Subir Menú"}
           </button>
-          <div className="relative w-full max-w-xs sm:max-w-none flex justify-center">
+          <div className="w-full max-w-xs sm:max-w-none flex justify-center">
             <div className="mt-4 sm:mt-6 bg-yellow-200 px-4 py-2 sm:px-16 sm:py-3 border-4 border-black shadow-[4px_4px_0_#000] rounded-xl transform rotate-2">
               <p className="text-red-900 font-black animate-pulse text-xs sm:text-base lg:text-xl uppercase text-center">
                 ¡Sube las fotos de lo que hay para tragar!
               </p>
             </div>
-            {/* <Image
-              src="/images/foto.png"
-              alt="migajon"
-              className="absolute bottom-[-30px] right-[-10px] w-20 drop-shadow-[0_5px_0_rgba(1,2,5,0.5)]"
-              width={100}
-              height={100}
-            /> */}
+            <span className="relative w-20">
+              <Image
+                src="/images/foto.png"
+                alt="migajon"
+                className="absolute bottom-[-30px] left-[-30px] w-20 drop-shadow-[0_5px_0_rgba(1,2,5,0.5)]"
+                width={100}
+                height={100}
+              />
+            </span>
           </div>
         </div>
 
