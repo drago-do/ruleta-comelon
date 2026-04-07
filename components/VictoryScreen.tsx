@@ -56,42 +56,42 @@ export default function VictoryScreen({
       />
 
       <div
-        className={`transform transition-all duration-700 ease-out ${show ? "scale-100 opacity-100 rotate-0" : "scale-50 opacity-0 -rotate-12"} bg-white border-8 border-yellow-400 rounded-3xl p-6 md:p-10 max-w-2xl w-full text-center shadow-[0_0_100px_rgba(250,204,21,0.5)]`}
+        className={`transform transition-all duration-700 ease-out ${show ? "scale-100 opacity-100 rotate-0" : "scale-50 opacity-0 -rotate-12"} bg-white border-8 border-black rounded-3xl p-8 md:p-12 max-w-2xl w-full text-center shadow-[16px_16px_0_#000] relative`}
       >
-        <h2 className="text-4xl md:text-6xl font-black text-red-600 uppercase italic mb-8 drop-shadow-md">
+        <h2 className="text-5xl md:text-7xl font-black text-red-600 uppercase italic mb-10 [text-shadow:4px_4px_0_#000] leading-tight">
           ¡El Destino ha Hablado!
         </h2>
 
-        <div className="space-y-6 mb-10">
-          <div className="bg-red-50 p-6 rounded-2xl border-4 border-red-200 shadow-inner">
-            <p className="text-lg font-bold text-red-800 uppercase tracking-widest mb-1">
+        <div className="space-y-8 mb-12">
+          <div className="bg-red-200 p-8 rounded-2xl border-8 border-black shadow-[8px_8px_0_#000] transform -rotate-1">
+            <p className="text-xl font-black text-red-900 uppercase tracking-widest mb-2 bg-white inline-block px-4 py-1 border-4 border-black shadow-[4px_4px_0_#000]">
               Comerás
             </p>
-            <p className="text-3xl md:text-4xl font-black text-red-600">
+            <p className="text-4xl md:text-5xl font-black text-black uppercase mt-4 [text-shadow:2px_2px_0_#FFF]">
               {comida}
             </p>
           </div>
 
-          <div className="bg-blue-50 p-6 rounded-2xl border-4 border-blue-200 shadow-inner">
-            <p className="text-lg font-bold text-blue-800 uppercase tracking-widest mb-1">
+          <div className="bg-blue-200 p-8 rounded-2xl border-8 border-black shadow-[8px_8px_0_#000] transform rotate-1">
+            <p className="text-xl font-black text-blue-900 uppercase tracking-widest mb-2 bg-white inline-block px-4 py-1 border-4 border-black shadow-[4px_4px_0_#000]">
               Acompañado de
             </p>
-            <p className="text-3xl md:text-4xl font-black text-blue-600">
+            <p className="text-4xl md:text-5xl font-black text-black uppercase mt-4 [text-shadow:2px_2px_0_#FFF]">
               {bebida}
             </p>
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        <div className="flex flex-col sm:flex-row gap-6 justify-center">
           <button
             onClick={onRestart}
-            className="bg-yellow-400 text-red-900 border-4 border-yellow-500 hover:bg-yellow-300 active:translate-y-1 px-8 py-4 rounded-full font-black text-xl uppercase transition-all shadow-lg"
+            className="bg-yellow-400 text-black border-4 border-black hover:bg-yellow-300 hover:-translate-y-1 active:translate-y-2 active:shadow-none px-8 py-4 rounded-full font-black text-2xl uppercase transition-all shadow-[6px_6px_0_#000]"
           >
             Girar Otra Vez 🎡
           </button>
           <button
             onClick={onNewMenu}
-            className="bg-red-600 text-white border-4 border-red-800 hover:bg-red-500 active:translate-y-1 px-8 py-4 rounded-full font-black text-xl uppercase transition-all shadow-lg"
+            className="bg-red-600 text-white border-4 border-black hover:bg-red-500 hover:-translate-y-1 active:translate-y-2 active:shadow-none px-8 py-4 rounded-full font-black text-2xl uppercase transition-all shadow-[6px_6px_0_#000]"
           >
             Nuevo Menú 📸
           </button>

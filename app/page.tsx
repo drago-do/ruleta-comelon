@@ -5,6 +5,7 @@ import LoadingSpinner, { LOADING_MESSAGES } from "@/components/LoadingSpinner";
 import ExtractionResults from "@/components/ExtractionResults";
 import MenuImagePreview, { MenuImage } from "@/components/MenuImagePreview";
 import Roulette3D from "@/components/Roulette3D";
+import Image from "next/image";
 
 export interface ExtractionResult {
   comida: string[];
@@ -68,39 +69,46 @@ export default function Home() {
     if (images.length === 0) return;
     setIsProcessing(true);
     setError(null);
-    
+
     try {
       const formData = new FormData();
-      images.forEach(img => {
-        formData.append('images', img.file);
+      images.forEach((img) => {
+        formData.append("images", img.file);
       });
-      
-      const response = await fetch('/api/extract-menu', {
-        method: 'POST',
-        body: formData
+
+      const response = await fetch("/api/extract-menu", {
+        method: "POST",
+        body: formData,
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Error en la petición');
+        throw new Error(errorData.error || "Error en la petición");
       }
 
       const resultData: ExtractionResult = await response.json();
-      
-      if ((!resultData.comida || resultData.comida.length === 0) && (!resultData.bebidas || resultData.bebidas.length === 0)) {
-          throw new Error('No se detectaron platos ni bebidas.');
+
+      if (
+        (!resultData.comida || resultData.comida.length === 0) &&
+        (!resultData.bebidas || resultData.bebidas.length === 0)
+      ) {
+        throw new Error("No se detectaron platos ni bebidas.");
       }
 
       setResult({
         comida: resultData.comida || [],
-        bebidas: resultData.bebidas || []
+        bebidas: resultData.bebidas || [],
       });
     } catch (err: any) {
       console.error(err);
-      if (err.message === 'API key no configurada') {
-        setError("¡Falta la API Key! Agrega OPENROUTER_API_KEY a tu .env.local y reinicia el servidor.");
+      if (err.message === "API key no configurada") {
+        setError(
+          "¡Falta la API Key! Agrega OPENROUTER_API_KEY a tu .env.local y reinicia el servidor.",
+        );
       } else {
-        setError("¡Rayos! El chef no entiende tu letra (o la IA se empachó). Reintenta.");
+        setError(
+          "¡Rayos! El chef no entiende tu letra (o la IA se empachó). Reintenta.",
+        );
       }
     } finally {
       setIsProcessing(false);
@@ -113,35 +121,41 @@ export default function Home() {
 
   if (showRoulette && result) {
     return (
-      <Roulette3D 
-        comida={result.comida} 
-        bebidas={result.bebidas} 
-        onBack={() => setShowRoulette(false)} 
+      <Roulette3D
+        comida={result.comida}
+        bebidas={result.bebidas}
+        onBack={() => setShowRoulette(false)}
       />
     );
   }
 
   if (result) {
     return (
-      <ExtractionResults 
-        result={result} 
-        onProceed={() => setShowRoulette(true)} 
+      <ExtractionResults
+        result={result}
+        onProceed={() => setShowRoulette(true)}
       />
     );
   }
 
   return (
     <div className="min-h-screen bg-yellow-400 font-sans p-8 flex flex-col items-center">
-      <header className="mb-12 text-center">
-        <h1 className="text-6xl font-black text-red-600 drop-shadow-[0_5px_0_rgba(0,0,0,0.2)] uppercase italic tracking-tighter mb-2">
-          La Ruleta Tragona 3000
+      <header className="mb-12 text-center mt-8">
+        <h1 className="text-5xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl 2xl:text-9xl font-black text-red-600 [text-shadow:6px_6px_0_#000] uppercase italic tracking-tighter mb-8 transform -rotate-2">
+          No sabes
+          <br />
+          qué comer?
         </h1>
-        <p className="text-xl font-bold text-red-800">¡Deja que el destino elija tu banquete!</p>
+        <div className="inline-block bg-white px-8 py-3 border-4 border-black shadow-[6px_6px_0_#000] transform rotate-2">
+          <p className="text-2xl font-black text-red-800 uppercase tracking-widest">
+            ¡Deja que el destino elija!
+          </p>
+        </div>
       </header>
 
       <main className="w-full max-w-4xl flex flex-col items-center gap-12">
         {error && (
-          <div className="bg-red-600 text-white font-black p-4 rounded-2xl shadow-lg animate-shake">
+          <div className="bg-red-600 text-white font-black p-6 rounded-2xl border-4 border-black shadow-[8px_8px_0_#000] animate-shake text-xl uppercase">
             ⚠️ {error}
           </div>
         )}
@@ -157,25 +171,33 @@ export default function Home() {
           />
           <button
             onClick={triggerUpload}
-            className="bg-red-600 hover:bg-red-700 active:translate-y-1 transition-all text-white text-4xl font-black py-8 px-16 rounded-full border-b-8 border-red-900 shadow-2xl uppercase tracking-widest hover:scale-105 transform cursor-pointer"
+            className="bg-red-600 hover:bg-red-500 hover:-translate-y-1 active:translate-y-2 transition-all text-white text-5xl font-black py-6 px-16 rounded-full border-4 border-black shadow-[8px_8px_0_#000] hover:shadow-[10px_10px_0_#000] active:shadow-none uppercase tracking-widest cursor-pointer"
           >
-            Subir Menú
+            {images.length > 0 ? "Subir Más +" : "Subir Menú"}
           </button>
-          <p className="text-red-900 font-bold animate-pulse text-lg">
-            ¡Sube las fotos de lo que hay para tragar! 📸
-          </p>
+          <div className="relative">
+            <div className="mt-6 bg-yellow-200 px-6 md:px-16 lg:px-20 py-3 border-4 border-black shadow-[4px_4px_0_#000] rounded-xl transform rotate-2">
+              <p className="text-red-900 font-black animate-pulse text-xl uppercase">
+                ¡Sube las fotos de lo que hay para tragar!
+              </p>
+            </div>
+            {/* <Image
+              src="/images/foto.png"
+              alt="migajon"
+              className="absolute bottom-[-30px] right-[-10px] w-20 drop-shadow-[0_5px_0_rgba(1,2,5,0.5)]"
+              width={100}
+              height={100}
+            /> */}
+          </div>
         </div>
 
-        <MenuImagePreview 
-          images={images} 
-          onRemoveImage={removeImage} 
-          onProcessOptions={processMenu} 
+        <MenuImagePreview
+          images={images}
+          onRemoveImage={removeImage}
+          onProcessOptions={processMenu}
         />
       </main>
-
-      <footer className="mt-auto pt-16 text-red-900/50 font-bold">
-        © 2026 La Ruleta Tragona 3000 - El que no elige, no come.
-      </footer>
+      <div className="w-full"></div>
     </div>
   );
 }
