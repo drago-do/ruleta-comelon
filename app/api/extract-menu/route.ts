@@ -9,6 +9,29 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'No images provided' }, { status: 400 });
     }
 
+    // Mock response for development environment to save API credits
+    if (process.env.NODE_ENV === 'development') {
+      console.log('--- MODO DESARROLLO ACTIVADO: Usando respuesta mock ---');
+      await new Promise(resolve => setTimeout(resolve, 1500)); // Simular latencia
+      return NextResponse.json({
+        comida: [
+          "Tacos de Pastor (MOCK)",
+          "Enchiladas Suizas (MOCK)",
+          "Chilaquiles Rojos (MOCK)",
+          "Hamburguesa Especial (MOCK)",
+          "Pizza Peperoni (MOCK)",
+          "Ensalada César (MOCK)"
+        ],
+        bebidas: [
+          "Agua de Jamaica (MOCK)",
+          "Refresco de Cola (MOCK)",
+          "Cerveza Artesanal (MOCK)",
+          "Margarita de Limón (MOCK)",
+          "Café Americano (MOCK)"
+        ]
+      });
+    }
+
     const apiKey = process.env.OPENROUTER_API_KEY;
     if (!apiKey || apiKey === 'tu_api_key_aqui') {
       return NextResponse.json({ error: 'API key no configurada' }, { status: 500 });
