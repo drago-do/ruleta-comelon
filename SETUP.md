@@ -270,7 +270,14 @@ MIT
 
 ## 👨‍💻 Autor
 
-Dragodo - [@Dragodo_](https://x.com/Dragodo_)
+Tu Nombre - [@tu_twitter](https://twitter.com/tu_twitter)
+
+## 🙏 Agradecimientos
+
+- [Better Auth](https://www.better-auth.com/) - Autenticación moderna
+- [OpenRouter](https://openrouter.ai/) - API de IA asequible
+- [Vercel](https://vercel.com/) - Hosting y deployment
 
 ---
 
+**¿Tienes dudas?** Abre un issue en GitHub o consulta [SPEC.md](./SPEC.md) para más detalles técnicos.

@@ -1,0 +1,49 @@
+"use client";
+
+import { useSession } from "@/lib/auth-client";
+import { useEffect, useState } from "react";
+
+interface RateLimitInfo {
+  remaining: number;
+  total: number;
+  resetAt: string;
+}
+
+export default function RateLimitBadge() {
+  const { data: session } = useSession();
+  const [rateLimitInfo, setRateLimitInfo] = useState<RateLimitInfo | null>(null);
+
+  useEffect(() => {
+    if (session) {
+      // Obtener info del rate limit desde localStorage (actualizado después de cada request)
+      const stored = localStorage.getItem('rateLimitInfo');
+      if (stored) {
+        setRateLimitInfo(JSON.parse(stored));
+      }
+    }
+  }, [session]);
+
+  if (!session || !rateLimitInfo) {
+    return null;
+  }
+
+  const used = rateLimitInfo.total - rateLimitInfo.remaining;
+  const percentage = (used / rateLimitInfo.total) * 100;
+
+  let bgColor = "bg-green-400";
+  if (percentage >= 80) bgColor = "bg-red-400";
+  else if (percentage >= 60) bgColor = "bg-yellow-400";
+
+  return (
+    <div className={`inline-block ${bgColor} px-4 py-2 border-4 border-black shadow-[4px_4px_0_#000] rounded-xl`}>
+      <div className="text-center">
+        <div className="text-2xl font-black text-black">
+          {used} / {rateLimitInfo.total}
+        </div>
+        <div className="text-xs font-bold text-black uppercase">
+          Requests Hoy
+        </div>
+      </div>
+    </div>
+  );
+}

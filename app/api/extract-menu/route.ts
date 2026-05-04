@@ -1,7 +1,49 @@
 import { NextResponse } from 'next/server';
+import { auth } from '@/lib/auth';
+import { checkRateLimit } from '@/lib/rate-limit';
+import { processImage, bufferToDataUrl, isValidImageType, isValidImageSize } from '@/lib/image-processor';
+import { IMAGE_CONSTRAINTS, ERROR_MESSAGES } from '@/lib/config';
+import { headers } from 'next/headers';
 
 export async function POST(request: Request) {
   try {
+    // 1. Verificar autenticación
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
+    if (!session) {
+      return NextResponse.json(
+        { error: ERROR_MESSAGES.NOT_AUTHENTICATED },
+        { status: 401 }
+      );
+    }
+
+    const userId = session.user.id;
+
+    // 2. Verificar rate limit
+    const rateLimitResult = await checkRateLimit(userId);
+    
+    if (!rateLimitResult.allowed) {
+      return NextResponse.json(
+        {
+          error: ERROR_MESSAGES.RATE_LIMIT_EXCEEDED,
+          remaining: rateLimitResult.remaining,
+          resetAt: rateLimitResult.resetAt,
+          current: rateLimitResult.current,
+        },
+        { 
+          status: 429,
+          headers: {
+            'X-RateLimit-Limit': '5',
+            'X-RateLimit-Remaining': rateLimitResult.remaining.toString(),
+            'X-RateLimit-Reset': rateLimitResult.resetAt.toISOString(),
+          }
+        }
+      );
+    }
+
+    // 3. Validar imágenes
     const formData = await request.formData();
     const files = formData.getAll('images') as File[];
 
@@ -9,10 +51,36 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'No images provided' }, { status: 400 });
     }
 
-    // Mock response for development environment to save API credits
+    // Validar cantidad de imágenes
+    if (files.length > IMAGE_CONSTRAINTS.MAX_FILES_COUNT) {
+      return NextResponse.json(
+        { error: ERROR_MESSAGES.TOO_MANY_IMAGES },
+        { status: 400 }
+      );
+    }
+
+    // Validar tipo y tamaño de cada imagen
+    for (const file of files) {
+      if (!isValidImageType(file.type)) {
+        return NextResponse.json(
+          { error: ERROR_MESSAGES.INVALID_IMAGE_TYPE },
+          { status: 400 }
+        );
+      }
+
+      if (!isValidImageSize(file.size)) {
+        return NextResponse.json(
+          { error: ERROR_MESSAGES.IMAGE_TOO_LARGE },
+          { status: 400 }
+        );
+      }
+    }
+
+    // Mock response para desarrollo
     if (process.env.NODE_ENV === 'development') {
       console.log('--- MODO DESARROLLO ACTIVADO: Usando respuesta mock ---');
-      await new Promise(resolve => setTimeout(resolve, 15000)); // Simular latencia
+      console.log(`Usuario: ${session.user.email} | Requests restantes: ${rateLimitResult.remaining}`);
+      await new Promise(resolve => setTimeout(resolve, 2000)); // Simular latencia reducida
       return NextResponse.json({
         comida: [
           "Tacos de Pastor (MOCK)",
@@ -28,23 +96,37 @@ export async function POST(request: Request) {
           "Cerveza Artesanal (MOCK)",
           "Margarita de Limón (MOCK)",
           "Café Americano (MOCK)"
-        ]
+        ],
+        meta: {
+          remaining: rateLimitResult.remaining,
+          resetAt: rateLimitResult.resetAt,
+        }
       });
     }
 
+    // 4. Procesar y comprimir imágenes
+    const processedImages = await Promise.all(
+      files.map(async (file) => {
+        try {
+          const processed = await processImage(file);
+          console.log(
+            `Image processed: ${file.name} | Original: ${(processed.originalSize / 1024).toFixed(2)}KB | ` +
+            `Compressed: ${(processed.compressedSize / 1024).toFixed(2)}KB | ` +
+            `Saved: ${((1 - processed.compressedSize / processed.originalSize) * 100).toFixed(1)}%`
+          );
+          return bufferToDataUrl(processed.buffer, processed.mimeType);
+        } catch (error) {
+          console.error('Error processing image:', file.name, error);
+          throw new Error(ERROR_MESSAGES.COMPRESSION_FAILED);
+        }
+      })
+    );
+
+    // 5. Llamar a la API de OpenRouter
     const apiKey = process.env.OPENROUTER_API_KEY;
     if (!apiKey || apiKey === 'tu_api_key_aqui') {
       return NextResponse.json({ error: 'API key no configurada' }, { status: 500 });
     }
-
-    // Convert files to base64 format for OpenRouter
-    const images = await Promise.all(
-      files.map(async (file) => {
-        const buffer = await file.arrayBuffer();
-        const base64 = Buffer.from(buffer).toString('base64');
-        return `data:${file.type};base64,${base64}`;
-      })
-    );
 
     const promptMessage = {
       type: "text",
@@ -62,7 +144,7 @@ Reglas IMPORTANTES:
 Si no encuentras bebidas o comida, devuelve el array vacío. Devuelve SOLO JSON válido sin texto adicional.`
     };
 
-    const imageMessages = images.map((b64Img: string) => ({
+    const imageMessages = processedImages.map((b64Img: string) => ({
       type: "image_url",
       image_url: {
         url: b64Img
@@ -76,7 +158,7 @@ Si no encuentras bebidas o comida, devuelve el array vacío. Devuelve SOLO JSON 
       headers: {
         'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
-        'HTTP-Referer': 'http://localhost:3000',
+        'HTTP-Referer': process.env.BETTER_AUTH_URL || 'http://localhost:3000',
         'X-Title': 'La Ruleta Tragona 3000',
       },
       body: JSON.stringify({
@@ -104,34 +186,61 @@ Si no encuentras bebidas o comida, devuelve el array vacío. Devuelve SOLO JSON 
     textResult = textResult.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
 
     try {
-        let parsedResult = JSON.parse(textResult);
-        
-        // Handle array of results from buggy LLM responses
-        if (Array.isArray(parsedResult)) {
-            const combinedResult = { comida: [] as string[], bebidas: [] as string[] };
-            for (const item of parsedResult) {
-                if (item.comida && Array.isArray(item.comida)) {
-                    combinedResult.comida.push(...item.comida);
-                }
-                if (item.bebidas && Array.isArray(item.bebidas)) {
-                    combinedResult.bebidas.push(...item.bebidas);
-                }
-            }
-            // Remove duplicates
-            parsedResult = {
-                comida: Array.from(new Set(combinedResult.comida)),
-                bebidas: Array.from(new Set(combinedResult.bebidas))
-            };
+      let parsedResult = JSON.parse(textResult);
+      
+      // Handle array of results from buggy LLM responses
+      if (Array.isArray(parsedResult)) {
+        const combinedResult = { comida: [] as string[], bebidas: [] as string[] };
+        for (const item of parsedResult) {
+          if (item.comida && Array.isArray(item.comida)) {
+            combinedResult.comida.push(...item.comida);
+          }
+          if (item.bebidas && Array.isArray(item.bebidas)) {
+            combinedResult.bebidas.push(...item.bebidas);
+          }
         }
+        // Remove duplicates
+        parsedResult = {
+          comida: Array.from(new Set(combinedResult.comida)),
+          bebidas: Array.from(new Set(combinedResult.bebidas))
+        };
+      }
 
-        return NextResponse.json(parsedResult);
+      // Agregar metadata de rate limit a la respuesta
+      return NextResponse.json(
+        {
+          ...parsedResult,
+          meta: {
+            remaining: rateLimitResult.remaining,
+            resetAt: rateLimitResult.resetAt,
+          }
+        },
+        {
+          headers: {
+            'X-RateLimit-Limit': '5',
+            'X-RateLimit-Remaining': rateLimitResult.remaining.toString(),
+            'X-RateLimit-Reset': rateLimitResult.resetAt.toISOString(),
+          }
+        }
+      );
     } catch(e) {
-        console.error("Failed to parse JSON:", textResult);
-        return NextResponse.json({ error: 'La respuesta de la IA no fue un JSON válido.' }, { status: 500 });
+      console.error("Failed to parse JSON:", textResult);
+      return NextResponse.json({ error: 'La respuesta de la IA no fue un JSON válido.' }, { status: 500 });
     }
 
   } catch (error) {
     console.error('Error en /api/extract-menu:', error);
+    
+    // Manejar errores específicos
+    if (error instanceof Error) {
+      if (error.message === 'COMPRESSION_FAILED') {
+        return NextResponse.json(
+          { error: ERROR_MESSAGES.COMPRESSION_FAILED },
+          { status: 400 }
+        );
+      }
+    }
+    
     return NextResponse.json({ error: 'Error interno del servidor.' }, { status: 500 });
   }
 }
