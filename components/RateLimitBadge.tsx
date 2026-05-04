@@ -11,15 +11,28 @@ interface RateLimitInfo {
 
 export default function RateLimitBadge() {
   const { data: session } = useSession();
-  const [rateLimitInfo, setRateLimitInfo] = useState<RateLimitInfo | null>(null);
+  const [rateLimitInfo, setRateLimitInfo] = useState<RateLimitInfo | null>(
+    null,
+  );
 
   useEffect(() => {
     if (session) {
-      // Obtener info del rate limit desde localStorage (actualizado después de cada request)
-      const stored = localStorage.getItem('rateLimitInfo');
-      if (stored) {
-        setRateLimitInfo(JSON.parse(stored));
-      }
+      const updateRateLimit = () => {
+        const stored = localStorage.getItem("rateLimitInfo");
+        if (stored) {
+          try {
+            setRateLimitInfo(JSON.parse(stored));
+          } catch (e) {
+            console.error("Error parsing rateLimitInfo", e);
+          }
+        }
+      };
+
+      updateRateLimit();
+
+      // Escuchar cambios en localStorage (disparados manualmente por page.tsx)
+      window.addEventListener("storage", updateRateLimit);
+      return () => window.removeEventListener("storage", updateRateLimit);
     }
   }, [session]);
 
@@ -35,13 +48,15 @@ export default function RateLimitBadge() {
   else if (percentage >= 60) bgColor = "bg-yellow-400";
 
   return (
-    <div className={`inline-block ${bgColor} px-4 py-2 border-4 border-black shadow-[4px_4px_0_#000] rounded-xl`}>
+    <div
+      className={`inline-block ${bgColor} px-4 py-2 border-4 border-black shadow-[4px_4px_0_#000] rounded-xl`}
+    >
       <div className="text-center">
         <div className="text-2xl font-black text-black">
           {used} / {rateLimitInfo.total}
         </div>
         <div className="text-xs font-bold text-black uppercase">
-          Requests Hoy
+          Menus cargados
         </div>
       </div>
     </div>

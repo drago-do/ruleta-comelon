@@ -1,12 +1,39 @@
 "use client";
 
 import { signIn, signOut, useSession } from "@/lib/auth-client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 
 export default function AuthButton() {
   const { data: session, isPending } = useSession();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [rateLimitInfo, setRateLimitInfo] = useState<{
+    remaining: number;
+    total: number;
+    resetAt: string;
+  } | null>(null);
+
+  // Cargar info del rate limit
+  useEffect(() => {
+    if (session) {
+      const updateRateLimit = () => {
+        const stored = localStorage.getItem("rateLimitInfo");
+        if (stored) {
+          try {
+            setRateLimitInfo(JSON.parse(stored));
+          } catch (e) {
+            console.error("Error parsing rateLimitInfo", e);
+          }
+        }
+      };
+
+      updateRateLimit();
+
+      // Escuchar cambios en localStorage (disparados manualmente por page.tsx)
+      window.addEventListener("storage", updateRateLimit);
+      return () => window.removeEventListener("storage", updateRateLimit);
+    }
+  }, [session]);
 
   const handleSignIn = async () => {
     await signIn.social({
@@ -19,6 +46,7 @@ export default function AuthButton() {
     await signOut({
       fetchOptions: {
         onSuccess: () => {
+          localStorage.removeItem("rateLimitInfo");
           window.location.href = "/";
         },
       },
@@ -108,9 +136,14 @@ export default function AuthButton() {
           <div className="absolute right-0 mt-2 w-64 bg-white border-4 border-black shadow-[6px_6px_0_#000] rounded-2xl overflow-hidden z-20">
             <div className="p-4 border-b-4 border-black bg-yellow-200">
               <div className="text-sm font-black text-red-900 uppercase">
-                Requests Hoy
+                Menus cargados
               </div>
-              <div className="text-2xl font-black text-red-600">? / 5</div>
+              <div className="text-2xl font-black text-red-600">
+                {rateLimitInfo
+                  ? rateLimitInfo.total - rateLimitInfo.remaining
+                  : 0}{" "}
+                / {rateLimitInfo?.total || 5}
+              </div>
               <div className="text-xs text-gray-700 mt-1">
                 Resetea a medianoche
               </div>

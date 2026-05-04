@@ -3,30 +3,42 @@
 import { useState, useEffect, useRef } from "react";
 
 export default function BackgroundMusic() {
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPlaying, setIsPlaying] = useState<boolean>(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("ruleta-audio-enabled");
+      return saved === null ? true : saved === "true";
+    }
+    return false;
+  });
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
+  // Initialize state from localStorage
   useEffect(() => {
-    // Assuming the user will place elevator_jazz.mp3 in public/audio/
+    const savedAudioPref = localStorage.getItem("ruleta-audio-enabled");
+    const shouldPlay =
+      savedAudioPref === null ? true : savedAudioPref === "true";
+
+    // Ensure state matches localStorage on mount
+    setIsPlaying(shouldPlay);
+
     audioRef.current = new Audio("/audio/elevator_jazz.mp3");
     audioRef.current.loop = true;
-    audioRef.current.volume = 0.3; // Background subtle volume
+    audioRef.current.volume = 0.3;
 
-    // Playback may fail without user interaction.
-    // However, if the user interacts with the app, we can try to play it.
     const handleInitialInteraction = () => {
-      if (!isPlaying && audioRef.current) {
+      if (shouldPlay && audioRef.current) {
         audioRef.current
           .play()
           .then(() => {
             setIsPlaying(true);
           })
           .catch(() => {
-            // Autoplay was blocked
+            // Autoplay was blocked, we'll try again if state is true
+            // but we don't want to flip the UI to 'muted' yet
           });
-        window.removeEventListener("click", handleInitialInteraction);
-        window.removeEventListener("keydown", handleInitialInteraction);
       }
+      window.removeEventListener("click", handleInitialInteraction);
+      window.removeEventListener("keydown", handleInitialInteraction);
     };
 
     window.addEventListener("click", handleInitialInteraction);
@@ -45,16 +57,22 @@ export default function BackgroundMusic() {
   const toggleMute = () => {
     if (!audioRef.current) return;
 
-    if (isPlaying) {
-      audioRef.current.pause();
-      setIsPlaying(false);
-    } else {
+    const nextState = !isPlaying;
+    setIsPlaying(nextState);
+    localStorage.setItem("ruleta-audio-enabled", String(nextState));
+
+    if (nextState) {
       audioRef.current
         .play()
         .then(() => {
           setIsPlaying(true);
         })
-        .catch((err) => console.log("Audio playback prevented", err));
+        .catch((err) => {
+          console.log("Audio playback prevented", err);
+          setIsPlaying(false);
+        });
+    } else {
+      audioRef.current.pause();
     }
   };
 

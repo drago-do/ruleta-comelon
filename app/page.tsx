@@ -9,6 +9,7 @@ import AuthButton from "@/components/AuthButton";
 import RateLimitBadge from "@/components/RateLimitBadge";
 import { useSession } from "@/lib/auth-client";
 import { IMAGE_CONSTRAINTS, ERROR_MESSAGES } from "@/lib/config";
+import Image from "next/image";
 
 export interface ExtractionResult {
   comida: string[];
@@ -37,9 +38,12 @@ export default function Home() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const selectedFiles = Array.from(e.target.files);
-      
+
       // Validar límite total de imágenes
-      if (images.length + selectedFiles.length > IMAGE_CONSTRAINTS.MAX_FILES_COUNT) {
+      if (
+        images.length + selectedFiles.length >
+        IMAGE_CONSTRAINTS.MAX_FILES_COUNT
+      ) {
         setError(ERROR_MESSAGES.TOO_MANY_IMAGES);
         return;
       }
@@ -181,7 +185,7 @@ export default function Home() {
         <AuthButton />
       </div>
 
-      <header className="mb-8 sm:mb-12 text-center mt-4 sm:mt-8">
+      <header className="mb-8 sm:mb-12 mt-16 text-center sm:mt-8">
         <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-black text-red-600 [text-shadow:4px_4px_0_#000] sm:[text-shadow:6px_6px_0_#000] uppercase italic tracking-tighter mb-6 sm:mb-8 transform -rotate-2 leading-none">
           No sabes
           <br />
@@ -255,7 +259,7 @@ export default function Home() {
             <span className="relative w-20">
               <Image
                 src="/images/foto.png"
-                alt="migajon"
+                alt="celular tomando foto"
                 className="absolute bottom-[-30px] left-[-30px] w-20 drop-shadow-[0_5px_0_rgba(1,2,5,0.5)]"
                 width={100}
                 height={100}
