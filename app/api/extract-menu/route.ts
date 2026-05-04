@@ -153,12 +153,18 @@ Si no encuentras bebidas o comida, devuelve el array vacío. Devuelve SOLO JSON 
 
     const contentArray = [promptMessage, ...imageMessages];
 
+    // FIX: Handle missing BETTER_AUTH_URL for Docker
+    let httpReferer = process.env.BETTER_AUTH_URL;
+    if (!httpReferer) {
+      httpReferer = 'http://localhost:3000';
+    }
+
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
-        'HTTP-Referer': process.env.BETTER_AUTH_URL || 'http://localhost:3000',
+        'HTTP-Referer': httpReferer,
         'X-Title': 'La Ruleta Tragona 3000',
       },
       body: JSON.stringify({
