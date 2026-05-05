@@ -31,7 +31,7 @@ export async function checkRateLimit(userId: string): Promise<RateLimitResult> {
       {
         userId: new ObjectId(userId),
         endpoint: RATE_LIMIT.ENDPOINT,
-        resetAt: tomorrow.toISOString(),
+        resetAt: tomorrow,
       },
       {
         $inc: { requestCount: 1 },
@@ -92,7 +92,7 @@ export async function getRateLimitStatus(userId: string): Promise<RateLimitResul
     const usage = await collection.findOne({
       userId: new ObjectId(userId),
       endpoint: RATE_LIMIT.ENDPOINT,
-      resetAt: tomorrow.toISOString(),
+      resetAt: tomorrow,
     });
 
     const requestCount = usage?.requestCount || 0;
