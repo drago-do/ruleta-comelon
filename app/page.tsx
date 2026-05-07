@@ -181,55 +181,55 @@ export default function Home() {
   return (
     <div className="min-h-screen font-sans p-4 sm:p-8 flex flex-col items-center">
       {/* Auth Button - Esquina superior derecha */}
-      <div className="fixed top-4 right-4 z-50">
+      <div className="fixed top-4 right-4 z-50 scale-90 sm:scale-100">
         <AuthButton />
       </div>
 
-      <header className="mb-8 sm:mb-12 mt-16 text-center sm:mt-8">
-        <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-black text-red-600 [text-shadow:4px_4px_0_#000] sm:[text-shadow:6px_6px_0_#000] uppercase italic tracking-tighter mb-6 sm:mb-8 transform -rotate-2 leading-none">
+      <header className="mb-6 sm:mb-12 mt-20 text-center sm:mt-8">
+        <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black text-red-600 [text-shadow:3px_3px_0_#000] sm:[text-shadow:6px_6px_0_#000] uppercase italic tracking-tighter mb-4 sm:mb-8 transform -rotate-2 leading-[0.85] sm:leading-none">
           No sabes
           <br />
           qué comer?
         </h1>
-        <div className="inline-block bg-white px-4 sm:px-8 py-2 sm:py-3 border-4 border-black shadow-[4px_4px_0_#000] sm:shadow-[6px_6px_0_#000] transform rotate-2">
-          <p className="text-lg sm:text-2xl font-black text-red-800 uppercase tracking-widest">
+        <div className="inline-block bg-white px-4 sm:px-8 py-2 sm:py-3 border-2 sm:border-4 border-black shadow-[3px_3px_0_#000] sm:shadow-[6px_6px_0_#000] transform rotate-2">
+          <p className="text-base sm:text-2xl font-black text-red-800 uppercase tracking-widest">
             ¡Deja que el destino elija!
           </p>
         </div>
       </header>
 
-      <main className="w-full max-w-4xl flex flex-col items-center gap-8 sm:gap-12">
+      <main className="w-full max-w-4xl flex flex-col items-center gap-6 sm:gap-12">
         {/* Rate Limit Badge */}
         {session && (
-          <div className="w-full flex justify-center">
+          <div className="w-full flex justify-center scale-90 sm:scale-100">
             <RateLimitBadge />
           </div>
         )}
         {error && (
-          <div className="bg-red-600 text-white font-black p-4 sm:p-6 rounded-2xl border-4 border-black shadow-[6px_6px_0_#000] sm:shadow-[8px_8px_0_#000] animate-shake text-base sm:text-lg text-center max-w-2xl">
+          <div className="bg-red-600 text-white font-black p-4 sm:p-6 rounded-2xl border-4 border-black shadow-[6px_6px_0_#000] sm:shadow-[8px_8px_0_#000] animate-shake text-sm sm:text-lg text-center max-w-2xl mx-4">
             ⚠️ {error}
           </div>
         )}
 
         {/* Mensaje si no está autenticado */}
         {!session && !isPending && (
-          <div className="bg-yellow-300 text-black font-black p-6 rounded-2xl border-4 border-black shadow-[6px_6px_0_#000] text-center max-w-2xl">
-            <div className="text-3xl mb-2">🔐</div>
-            <div className="text-lg uppercase mb-2">
+          <div className="bg-yellow-300 text-black font-black p-5 sm:p-8 rounded-2xl border-4 border-black shadow-[6px_6px_0_#000] text-center max-w-2xl mx-4">
+            <div className="text-2xl sm:text-4xl mb-2">🔐</div>
+            <div className="text-base sm:text-xl uppercase mb-2">
               ¡Inicia sesión para empezar!
             </div>
-            <div className="text-sm">
+            <div className="text-xs sm:text-sm">
               Necesitas autenticarte con Google para proteger la API de uso
               excesivo.
               <br />
-              <span className="text-red-600">
+              <span className="text-red-600 font-bold">
                 Límite: 5 extracciones por día.
               </span>
             </div>
           </div>
         )}
 
-        <div className="flex flex-col items-center gap-4 w-full">
+        <div className="flex flex-col items-center gap-4 w-full px-4">
           <input
             type="file"
             ref={fileInputRef}
@@ -242,7 +242,7 @@ export default function Home() {
           <button
             onClick={triggerUpload}
             disabled={!session || isPending}
-            className={`w-full sm:w-auto text-white text-3xl sm:text-4xl md:text-5xl font-black py-4 px-8 sm:py-6 sm:px-16 rounded-full border-4 border-black shadow-[6px_6px_0_#000] sm:shadow-[8px_8px_0_#000] uppercase tracking-widest transition-all ${
+            className={`w-full sm:w-auto text-white text-2xl sm:text-4xl md:text-5xl font-black py-4 px-8 sm:py-6 sm:px-16 rounded-full border-4 border-black shadow-[6px_6px_0_#000] sm:shadow-[8px_8px_0_#000] uppercase tracking-widest transition-all ${
               session && !isPending
                 ? "bg-red-600 hover:bg-red-500 hover:-translate-y-1 hover:shadow-[10px_10px_0_#000] active:translate-y-1 active:shadow-none cursor-pointer"
                 : "bg-gray-400 cursor-not-allowed opacity-60"
@@ -250,21 +250,21 @@ export default function Home() {
           >
             {images.length > 0 ? "Más +" : "Subir Menú"}
           </button>
-          <div className="w-full max-w-xs sm:max-w-none flex justify-center">
+          <div className="w-full max-w-xs sm:max-w-none flex justify-center relative">
             <div className="mt-4 sm:mt-6 bg-yellow-200 px-4 py-2 sm:px-16 sm:py-3 border-4 border-black shadow-[4px_4px_0_#000] rounded-xl transform rotate-2">
-              <p className="text-red-900 font-black animate-pulse text-xs sm:text-base lg:text-xl uppercase text-center">
+              <p className="text-red-900 font-black animate-pulse text-[10px] sm:text-base lg:text-xl uppercase text-center">
                 ¡Sube las fotos de lo que hay para comer!
               </p>
             </div>
-            <span className="relative w-20">
+            <div className="absolute -bottom-8 -right-4 sm:relative sm:bottom-0 sm:right-0 sm:w-20">
               <Image
                 src="/images/foto.png"
                 alt="celular tomando foto"
-                className="absolute bottom-[-30px] left-[-30px] w-20 drop-shadow-[0_5px_0_rgba(1,2,5,0.5)]"
+                className="w-16 sm:w-20 drop-shadow-[0_5px_0_rgba(1,2,5,0.5)]"
                 width={100}
                 height={100}
               />
-            </span>
+            </div>
           </div>
         </div>
 

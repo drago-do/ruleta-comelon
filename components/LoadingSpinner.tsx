@@ -54,17 +54,17 @@ export default function LoadingSpinner() {
         />
       </div>
 
-      <div className="inline-block bg-yellow-200 mb-24 px-4 sm:px-8 py-2 sm:py-3 border-4 border-black shadow-[4px_4px_0_#000] sm:shadow-[6px_6px_0_#000] transform rotate-2">
+      <div className="inline-block bg-yellow-200 mb-12 sm:mb-24 px-4 sm:px-8 py-2 sm:py-3 border-4 border-black shadow-[4px_4px_0_#000] sm:shadow-[6px_6px_0_#000] transform rotate-2 mx-4">
         <div
           className={`transition-all duration-1000 transform ${fade ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
         >
-          <h2 className="text-4xl sm:text-5xl font-black text-red-900 uppercase max-w-2xl tracking-tighter">
+          <h2 className="text-xl sm:text-4xl md:text-5xl font-black text-red-900 uppercase max-w-2xl tracking-tighter leading-tight">
             {message}
           </h2>
         </div>
       </div>
 
-      <div className="w-80 h-8 bg-white border-4 border-black rounded-full overflow-hidden relative shadow-[8px_8px_0_#000]">
+      <div className="w-full max-w-[280px] sm:max-w-xs h-6 sm:h-8 bg-white border-4 border-black rounded-full overflow-hidden relative shadow-[6px_6px_0_#000] sm:shadow-[8px_8px_0_#000]">
         <div className="h-full bg-red-500 absolute inset-0 animate-loading-bar border-r-4 border-black"></div>
       </div>
     </div>

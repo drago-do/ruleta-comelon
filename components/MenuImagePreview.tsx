@@ -38,9 +38,9 @@ export default function MenuImagePreview({
             </div>
             <button
               onClick={() => onRemoveImage(img.id)}
-              className="absolute -top-2 -right-2 sm:-top-4 sm:-right-4 bg-red-600 text-white w-8 h-8 sm:w-10 sm:h-10 rounded-full text-xs sm:text-base font-black border-2 sm:border-4 border-black shadow-[2px_2px_0_#000] sm:shadow-[4px_4px_0_#000] hover:bg-red-500 active:translate-y-1 active:shadow-none transition-all flex items-center justify-center z-10"
+              className="absolute -top-2 -right-2 sm:-top-4 sm:-right-4 bg-red-600 text-white w-9 h-9 sm:w-10 sm:h-10 rounded-full text-sm sm:text-base font-black border-2 sm:border-4 border-black shadow-[2px_2px_0_#000] sm:shadow-[4px_4px_0_#000] hover:bg-red-500 active:translate-y-1 active:shadow-none transition-all flex items-center justify-center z-10"
             >
-              X
+              ✕
             </button>
           </div>
         ))}

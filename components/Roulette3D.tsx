@@ -10,6 +10,7 @@ import {
 import * as THREE from "three";
 import VictoryScreen from "./VictoryScreen";
 import Image from "next/image";
+import { useWindowSize } from "react-use";
 
 interface Roulette3DProps {
   comida: string[];
@@ -197,6 +198,9 @@ export default function Roulette3D({
   bebidas,
   onBack,
 }: Roulette3DProps) {
+  const { width } = useWindowSize();
+  const isMobile = width < 768;
+
   const [isSpinning, setIsSpinning] = useState(false);
   const [comidaFinished, setComidaFinished] = useState(false);
   const [bebidasFinished, setBebidasFinished] = useState(false);
@@ -248,21 +252,35 @@ export default function Roulette3D({
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col">
-      <div className="p-4 flex justify-between items-center bg-red-600 text-white shadow-md z-10 relative border-b-8 border-red-800">
-        <h2 className="text-3xl font-black italic uppercase drop-shadow-md">
-          ¡El Casino del Hambre!
+      <div className="p-3 sm:p-4 flex justify-between items-center bg-red-600 text-white shadow-md z-10 relative border-b-4 sm:border-b-8 border-red-800">
+        <h2 className="text-xl sm:text-3xl font-black italic uppercase drop-shadow-md leading-none">
+          ¡El Casino
+          <br className="sm:hidden" /> del Hambre!
         </h2>
         <button
           onClick={onBack}
           disabled={isSpinning}
-          className="bg-yellow-400 text-red-900 border-4 border-yellow-500 hover:bg-yellow-300 active:translate-y-1 px-6 py-2 rounded-full font-black uppercase transition-all shadow-lg disabled:opacity-50"
+          className="bg-yellow-400 text-red-900 border-2 sm:border-4 border-yellow-500 hover:bg-yellow-300 active:translate-y-1 px-4 py-1.5 sm:px-6 sm:py-2 rounded-full text-sm sm:text-base font-black uppercase transition-all shadow-lg disabled:opacity-50"
         >
           Volver
         </button>
       </div>
 
-      <div className="flex-1 relative overflow-hidden">
-        <Canvas camera={{ position: [0, 8, 10], fov: 50 }}>
+      <div className="flex-1 relative overflow-hidden bg-yellow-400">
+        {/* Background Pattern Overlay */}
+        <div className="absolute inset-0 opacity-40 pointer-events-none" 
+             style={{ 
+               backgroundImage: 'url("/images/patternbg.avif")', 
+               backgroundRepeat: 'repeat', 
+               backgroundSize: '400px' 
+             }}>
+        </div>
+        <Canvas 
+          camera={{ 
+            position: isMobile ? [0, 15, 12] : [0, 8, 10], 
+            fov: isMobile ? 45 : 50 
+          }}
+        >
           <ambientLight intensity={0.6} />
           <spotLight
             position={[10, 15, 10]}
@@ -287,12 +305,12 @@ export default function Roulette3D({
             }
           >
             <Center>
-              <group position={[0, -1, 0]}>
+              <group position={[0, isMobile ? 0 : -1, 0]}>
                 <RouletteWheel
                   url="/models/ruleta.glb"
                   items={comida}
-                  position={[-3, 0, 0]}
-                  scale={2}
+                  position={isMobile ? [0, 0, -3.5] : [-3, 0, 0]}
+                  scale={isMobile ? 1.8 : 2}
                   color="#b91c1c"
                   label="🍕 COMIDA"
                   isSpinning={isSpinning}
@@ -305,8 +323,8 @@ export default function Roulette3D({
                 <RouletteWheel
                   url="/models/ruleta.glb"
                   items={bebidas}
-                  position={[3, 0, 0]}
-                  scale={1.5}
+                  position={isMobile ? [0, 0, 3.5] : [3, 0, 0]}
+                  scale={isMobile ? 1.4 : 1.5}
                   color="#1d4ed8"
                   label="🥤 BEBIDAS"
                   isSpinning={isSpinning}
@@ -316,8 +334,14 @@ export default function Roulette3D({
                   pointerAngleOffset={Math.PI / 2}
                 />
 
-                <Pointer position={[-3, 0.5, 3]} rotation={[0, Math.PI, 0]} />
-                <Pointer position={[3, 0.5, 2.3]} rotation={[0, Math.PI, 0]} />
+                <Pointer 
+                  position={isMobile ? [0, 0.5, -0.5] : [-3, 0.5, 3]} 
+                  rotation={[0, Math.PI, 0]} 
+                />
+                <Pointer 
+                  position={isMobile ? [0, 0.5, 6.5] : [3, 0.5, 2.3]} 
+                  rotation={[0, Math.PI, 0]} 
+                />
               </group>
             </Center>
           </Suspense>
@@ -333,18 +357,18 @@ export default function Roulette3D({
 
         {/* Start Button */}
         {!isSpinning && !showVictory && (
-          <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2 cursor-pointer z-10">
+          <div className="absolute bottom-8 sm:bottom-12 left-1/2 transform -translate-x-1/2 cursor-pointer z-10">
             <button
               onClick={handleSpin}
-              className="bg-red-600 hover:bg-red-500 text-white font-black text-xl px-12 py-4 rounded-2xl shadow-[0_12px_0_rgb(127,29,29)] active:shadow-[0_0px_0_rgb(127,29,29)] active:translate-y-[12px] transition-all border-4 border-white uppercase flex items-center gap-4 cursor-pointer"
+              className="bg-red-600 hover:bg-red-500 text-white font-black text-lg sm:text-xl px-8 py-3 sm:px-12 sm:py-4 rounded-2xl shadow-[0_8px_0_rgb(127,29,29)] sm:shadow-[0_12px_0_rgb(127,29,29)] active:shadow-none active:translate-y-[8px] sm:active:translate-y-[12px] transition-all border-4 border-white uppercase flex items-center gap-4 cursor-pointer whitespace-nowrap"
             >
               ¡GIRAR!
               <Image
                 src="/images/dados.png"
                 alt="Dados"
-                width={100}
-                height={100}
-                className="absolute -top-12 -right-12 rotate-12 drop-shadow-[5px_5px_0_rgba(0,0,0,1)] z-10 w-24 h-24 sm:w-28 sm:h-28 object-contain"
+                width={80}
+                height={80}
+                className="absolute -top-10 -right-10 sm:-top-12 sm:-right-12 rotate-12 drop-shadow-[5px_5px_0_rgba(0,0,0,1)] z-10 w-20 h-20 sm:w-28 sm:h-28 object-contain"
               />
             </button>
           </div>
