@@ -1,6 +1,11 @@
 {
   "version": 1,
   "skills": {
+    "accessibility": {
+      "source": "addyosmani/web-quality-skills",
+      "sourceType": "autoskills-registry",
+      "computedHash": "bffe3d08cfe92ebad63699f74ce29e35c19850ebfbf474c1463183cfe34d6a09"
+    },
     "agent-browser": {
       "source": "vercel-labs/agent-browser",
       "sourceType": "github",
@@ -16,11 +21,31 @@
       "sourceType": "github",
       "computedHash": "f67c9e807f3c07406cb02088ba24098459c1fd766022a0ec1b559070bd6434e9"
     },
+    "best-practices": {
+      "source": "better-auth/skills",
+      "sourceType": "autoskills-registry",
+      "computedHash": "0d59bc23f61ba03b850aa3b81392044c5c7fa3662a5f61b98490b20b0f14a56a"
+    },
     "better-auth-best-practices": {
       "source": "better-auth/skills",
       "sourceType": "github",
       "skillPath": "better-auth/best-practices/SKILL.md",
       "computedHash": "a4c830509e85557b59339d8d93a4e243e9e59c686e7678854d39230e12c2a6dc"
+    },
+    "composition-patterns": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "autoskills-registry",
+      "computedHash": "c124390cc3441844903ada94cb5820b23d922f2d0ad34e01e029e410197c8a32"
+    },
+    "emailAndPassword": {
+      "source": "better-auth/skills",
+      "sourceType": "autoskills-registry",
+      "computedHash": "1cbc9527756aa933c0f2f5ad7f18fe493f78ef0f4b6f073b624fbf6ccbd463c9"
+    },
+    "frontend-design": {
+      "source": "anthropics/skills",
+      "sourceType": "autoskills-registry",
+      "computedHash": "82fb11a63fb1e35ee2469516ed02d54695f783115b1540c0e783197af4240a3a"
     },
     "frontend-developer": {
       "source": "sickn33/antigravity-awesome-skills",
@@ -32,10 +57,60 @@
       "sourceType": "github",
       "computedHash": "12ab8441fa9d0a36286e67dd8a0996d687a734a66b738559b6586a87fec0f6d0"
     },
+    "next-best-practices": {
+      "source": "vercel-labs/next-skills",
+      "sourceType": "autoskills-registry",
+      "computedHash": "22d9bba45864c4ae8acca9f6430290634343b7de91005d090e0ba201bdbbb5da"
+    },
+    "next-cache-components": {
+      "source": "vercel-labs/next-skills",
+      "sourceType": "autoskills-registry",
+      "computedHash": "82a02f95879e9adf1a5a89f9ca2f51813e41ff3bab3c723cc8905f5a926bdd30"
+    },
+    "next-upgrade": {
+      "source": "vercel-labs/next-skills",
+      "sourceType": "autoskills-registry",
+      "computedHash": "265833561c41038b4a626585b46186cff859b7f9b2254ae6b88d01648790a7b4"
+    },
     "nextjs-best-practices": {
       "source": "sickn33/antigravity-awesome-skills",
       "sourceType": "github",
       "computedHash": "8f5b6b588c638139854181f80a241c16575810a3bd45b0983e55078b6aed347a"
+    },
+    "nodejs-backend-patterns": {
+      "source": "wshobson/agents",
+      "sourceType": "autoskills-registry",
+      "computedHash": "710a5e6f83c46e8f6c43356df55c143a7375c4414559a581654ce51709138c55"
+    },
+    "nodejs-best-practices": {
+      "source": "sickn33/antigravity-awesome-skills",
+      "sourceType": "autoskills-registry",
+      "computedHash": "7361ab02fb6b09913e3bdd9cf61c629ed6c17de9485e6a781054e5d437ccfc29"
+    },
+    "organization": {
+      "source": "better-auth/skills",
+      "sourceType": "autoskills-registry",
+      "computedHash": "74bd4e58dd4b66466f79cf0d00a5e75d5ca81b98c0461ee8cd7faba7d8dc16fa"
+    },
+    "react-best-practices": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "autoskills-registry",
+      "computedHash": "502eb06700e2c3cb1bd7f710860528f72281320bd5171a2087b05a090b573dc1"
+    },
+    "react-three-fiber": {
+      "source": "vercel-labs/json-render",
+      "sourceType": "autoskills-registry",
+      "computedHash": "1158a4910694206be05c820faca73de932bcbdd23f12fb98897f859b61cb7005"
+    },
+    "seo": {
+      "source": "addyosmani/web-quality-skills",
+      "sourceType": "autoskills-registry",
+      "computedHash": "c184da724d1c61ad077f27418ea8e7e88fd54bcdf98165e18be7e4681cbd5e20"
+    },
+    "tailwind-css-patterns": {
+      "source": "giuseppe-trisciuoglio/developer-kit",
+      "sourceType": "autoskills-registry",
+      "computedHash": "8fd534b64b3f305ade80c207e2f9ba4338d5e409e355af9f724c36764b6709c1"
     },
     "tailwind-patterns": {
       "source": "sickn33/antigravity-awesome-skills",
@@ -53,49 +128,49 @@
       "computedHash": "1d515fbbd0cd84326154b080193de1e471657302269ef417c8f1cd6c69d8719d"
     },
     "threejs-animation": {
-      "source": "sickn33/antigravity-awesome-skills",
-      "sourceType": "github",
-      "computedHash": "8c50b1493812bd88f3ed0637c0c3c5d846afdb322157b67b2ffba4ce8e552835"
+      "source": "cloudai-x/threejs-skills",
+      "sourceType": "autoskills-registry",
+      "computedHash": "b3b6365653ff318a55181814db0e779ceb097c0c07d8f1442c836a9cfc9e93f4"
     },
     "threejs-fundamentals": {
-      "source": "sickn33/antigravity-awesome-skills",
-      "sourceType": "github",
-      "computedHash": "e08d49571071f0f54ef2a76fdfcb96c16673e4fda478067727def4659feb80ca"
+      "source": "cloudai-x/threejs-skills",
+      "sourceType": "autoskills-registry",
+      "computedHash": "4bebfd12aefa07b80874b556a45013f717553a69070fcafe51c37a7eb2ae55b0"
     },
     "threejs-geometry": {
-      "source": "sickn33/antigravity-awesome-skills",
-      "sourceType": "github",
-      "computedHash": "4e5757bf80a329810545c237e557e362fa14fd3a3e6a567ec1d75435be6b2dda"
+      "source": "cloudai-x/threejs-skills",
+      "sourceType": "autoskills-registry",
+      "computedHash": "9fd3b2b040e297ba391da0e1d916c8567e63bb6f4b45ef757065bc5042f272b7"
     },
     "threejs-interaction": {
-      "source": "sickn33/antigravity-awesome-skills",
-      "sourceType": "github",
-      "computedHash": "988d235b7ebd85276a584c6f81ce7c801280ebc45b401017b334136dc8a7ec82"
+      "source": "cloudai-x/threejs-skills",
+      "sourceType": "autoskills-registry",
+      "computedHash": "e4ee9b39dcf4f9f596d0bfd39f730547078089f7dfdfac8a6a5cf07e8ee238be"
     },
     "threejs-lighting": {
-      "source": "sickn33/antigravity-awesome-skills",
-      "sourceType": "github",
-      "computedHash": "9303d1b8a9704e88415e5a98c98ad7b6e0f654f8029a3606af7947c0efcb86cc"
+      "source": "cloudai-x/threejs-skills",
+      "sourceType": "autoskills-registry",
+      "computedHash": "d341fa3200c4866cf6bbe21b76171f793d4b2813897862f83c9eeed0b5d33b86"
     },
     "threejs-loaders": {
-      "source": "sickn33/antigravity-awesome-skills",
-      "sourceType": "github",
-      "computedHash": "f2cceed635fd7a2119acf6e5b1a2fcba63a0e52cf2514c1830a69e4744554fcc"
+      "source": "cloudai-x/threejs-skills",
+      "sourceType": "autoskills-registry",
+      "computedHash": "e1ea488e282566fba0be2e25997ae1e09b150c4b1ce0db4bda3dd68be6ebae21"
     },
     "threejs-materials": {
-      "source": "sickn33/antigravity-awesome-skills",
-      "sourceType": "github",
-      "computedHash": "3d90cdfeb4fb7a8f1493ebbeaf81419c225385414bcd88411d4c13dc02e63cd1"
+      "source": "cloudai-x/threejs-skills",
+      "sourceType": "autoskills-registry",
+      "computedHash": "0a87c2d46accaea38397f27c7ecde359673a5c34748be15c117f8468ec4b8c2b"
     },
     "threejs-postprocessing": {
-      "source": "sickn33/antigravity-awesome-skills",
-      "sourceType": "github",
-      "computedHash": "48e04ff507582a18e0d509c2738b9d9466881b00e8ca2600727910a0d52abf75"
+      "source": "cloudai-x/threejs-skills",
+      "sourceType": "autoskills-registry",
+      "computedHash": "1474dd9d0cf9e9953812cdf6194d55135dfe1352b948f3c23a355bf9d096c998"
     },
     "threejs-shaders": {
-      "source": "sickn33/antigravity-awesome-skills",
-      "sourceType": "github",
-      "computedHash": "649ceb058edfb5cfd51e80fb3a6c57aca9bab4a9d3a03f6077aa9502be0c0771"
+      "source": "cloudai-x/threejs-skills",
+      "sourceType": "autoskills-registry",
+      "computedHash": "6aa9d9d7da431e6f90a8726e44cba19a6202237d0cfeb7638e388573602fd511"
     },
     "threejs-skills": {
       "source": "sickn33/antigravity-awesome-skills",
@@ -103,9 +178,19 @@
       "computedHash": "137d8adff5c38d79ffdea4e02ed995a0e2d3dc6ec4bc28f4cc947f22be5251c5"
     },
     "threejs-textures": {
-      "source": "sickn33/antigravity-awesome-skills",
-      "sourceType": "github",
-      "computedHash": "772a0bfc1d64cfcbc5347d206584a8fa412983201ad7a2cfb8766097b4936db9"
+      "source": "cloudai-x/threejs-skills",
+      "sourceType": "autoskills-registry",
+      "computedHash": "05f489c5a53847693b19248409e9ac790e73acdfd8e22bf46c0613b2b19ed74e"
+    },
+    "twoFactor": {
+      "source": "better-auth/skills",
+      "sourceType": "autoskills-registry",
+      "computedHash": "85230144b20eed676d0cbe8d28997cb9ccc0b293517204215adad0d74fae9a9d"
+    },
+    "typescript-advanced-types": {
+      "source": "wshobson/agents",
+      "sourceType": "autoskills-registry",
+      "computedHash": "5ca0e177c6aaaba1889255691224daafdb7d71f317cc70bede1590d3907ded42"
     },
     "vercel-react-best-practices": {
       "source": "vercel-labs/agent-skills",

@@ -1,8 +1,6 @@
 ---
 name: threejs-materials
 description: Three.js materials - PBR, basic, phong, shader materials, material properties. Use when styling meshes, working with textures, creating custom shaders, or optimizing material performance.
-risk: unknown
-source: community
 ---
 
 # Three.js Materials
@@ -520,8 +518,3 @@ material.dispose();
 - `threejs-textures` - Texture loading and configuration
 - `threejs-shaders` - Custom shader development
 - `threejs-lighting` - Light interaction with materials
-
-
-## When to Use
-
-Use this skill when tackling tasks related to its primary domain or functionality as described above.

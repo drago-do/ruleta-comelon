@@ -1,10 +1,7 @@
 import { useState } from "react";
 import Image from "next/image";
 
-interface ExtractionResult {
-  comida: string[];
-  bebidas: string[];
-}
+import type { ExtractionResult } from "@/types";
 
 interface ExtractionResultsProps {
   result: ExtractionResult;
