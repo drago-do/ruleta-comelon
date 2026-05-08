@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "La Ruleta Tragona 3000",
+  title: "La Ruleta del destino",
   description: "Deja que el destino decida qué vas a comer y beber.",
 };
 
